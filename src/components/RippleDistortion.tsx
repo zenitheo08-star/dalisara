@@ -271,31 +271,13 @@ export const RippleDistortion: React.FC<RippleDistortionProps> = ({
 
     if (isVideo) {
       video = document.createElement('video');
-      if (src.startsWith('http')) {
-        video.crossOrigin = 'anonymous';
-      }
+      video.crossOrigin = 'anonymous';
       video.muted = true;
       video.loop = true;
       video.playsInline = true;
       video.autoplay = true;
-      video.preload = 'auto';
-      
-      const handleVideoLoad = () => {
-        if (disposed || !video) return;
-        // Only set it once we actually have video dimensions to avoid WebGL errors
-        if (video.videoWidth > 0) {
-          imageTexture.image = video;
-          compositeUniforms.uTextureSize.value = [video.videoWidth, video.videoHeight];
-          video.play().catch(() => {});
-        }
-      };
-
-      video.addEventListener('loadeddata', handleVideoLoad);
-      video.addEventListener('canplay', handleVideoLoad);
-      video.addEventListener('canplaythrough', handleVideoLoad);
-
       video.src = src;
-      video.load();
+      video.play().catch(() => {});
     } else {
       const image = new window.Image();
       if (src.startsWith('http')) {
@@ -519,7 +501,23 @@ export const RippleDistortion: React.FC<RippleDistortionProps> = ({
       geometry.attributes.iOpacity.needsUpdate = true;
 
       if (isVideo && video && video.readyState >= 2) {
+        if (imageTexture.image !== video) {
+          imageTexture.image = video;
+        }
         imageTexture.needsUpdate = true;
+        if (video.videoWidth > 0) {
+          video.width = video.videoWidth;
+          video.height = video.videoHeight;
+          compositeUniforms.uTextureSize.value = [video.videoWidth, video.videoHeight];
+        }
+        // Attempt to play if paused, but don't spam the promise
+        if (video.paused && !video.dataset.playAttempted) {
+          video.dataset.playAttempted = 'true';
+          video.play().catch(() => {
+             // Reset after a delay so it can try again if the user interacted
+             setTimeout(() => { if (video) video.dataset.playAttempted = ''; }, 1000);
+          });
+        }
       }
 
       renderer.render({ scene: waveMesh, target: displacementTarget, clear: true });
@@ -585,6 +583,10 @@ export const RippleDistortion: React.FC<RippleDistortionProps> = ({
 
     return () => {
       disposed = true;
+      if (video) {
+        video.pause();
+        video.src = '';
+      }
       cancelAnimationFrame(raf);
       ro.disconnect();
       mount.removeEventListener('pointermove', onMove);
