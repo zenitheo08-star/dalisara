@@ -282,8 +282,7 @@ export const RippleDistortion: React.FC<RippleDistortionProps> = ({
       video.playsInline = true;
       video.autoplay = true;
       video.preload = 'auto';
-      video.crossOrigin = 'anonymous';
-
+      
       const handleVideoReady = () => {
         if (disposed || !video) return;
         if (video.videoWidth > 0) {
@@ -291,8 +290,10 @@ export const RippleDistortion: React.FC<RippleDistortionProps> = ({
           video.height = video.videoHeight;
           compositeUniforms.uTextureSize.value = [video.videoWidth, video.videoHeight];
         }
-        imageTexture.image = video;
-        imageTexture.needsUpdate = true;
+        if (video.readyState >= 2) {
+          imageTexture.image = video;
+          imageTexture.needsUpdate = true;
+        }
       };
 
       video.addEventListener('loadedmetadata', handleVideoReady);
