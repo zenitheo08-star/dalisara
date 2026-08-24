@@ -271,13 +271,54 @@ export const RippleDistortion: React.FC<RippleDistortionProps> = ({
 
     if (isVideo) {
       video = document.createElement('video');
-      video.crossOrigin = 'anonymous';
+      video.setAttribute('playsinline', '');
+      video.setAttribute('webkit-playsinline', '');
+      video.setAttribute('muted', '');
+      video.setAttribute('autoplay', '');
+      video.setAttribute('loop', '');
       video.muted = true;
+      video.defaultMuted = true;
       video.loop = true;
       video.playsInline = true;
       video.autoplay = true;
+      video.preload = 'auto';
+      video.crossOrigin = 'anonymous';
+
+      const handleVideoReady = () => {
+        if (disposed || !video) return;
+        if (video.videoWidth > 0) {
+          video.width = video.videoWidth;
+          video.height = video.videoHeight;
+          compositeUniforms.uTextureSize.value = [video.videoWidth, video.videoHeight];
+        }
+        imageTexture.image = video;
+        imageTexture.needsUpdate = true;
+      };
+
+      video.addEventListener('loadedmetadata', handleVideoReady);
+      video.addEventListener('loadeddata', handleVideoReady);
+      video.addEventListener('canplay', handleVideoReady);
+      video.addEventListener('playing', handleVideoReady);
+
       video.src = src;
-      video.play().catch(() => {});
+      video.load();
+
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          const unlock = () => {
+            if (video && video.paused) {
+              video.play().catch(() => {});
+            }
+            window.removeEventListener('pointerdown', unlock);
+            window.removeEventListener('touchstart', unlock);
+            window.removeEventListener('keydown', unlock);
+          };
+          window.addEventListener('pointerdown', unlock, { once: true });
+          window.addEventListener('touchstart', unlock, { once: true });
+          window.addEventListener('keydown', unlock, { once: true });
+        });
+      }
     } else {
       const image = new window.Image();
       if (src.startsWith('http')) {
