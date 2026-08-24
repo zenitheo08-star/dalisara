@@ -1,0 +1,15 @@
+--- src/components/CustomCursor.tsx
++++ src/components/CustomCursor.tsx
+@@ -361,4 +361,3 @@
+ 
+-  const showBoat = isVisible && (hoverType === 'default' || hoverType === 'image');
+-  const showFish = isVisible && (hoverType === 'button' || hoverType === 'link' || hoverType === 'text');
++  const showFish = isVisible && hoverType !== 'none';
+ 
+@@ -375,4 +374,4 @@
+         style={{
+-          x: boatX,
+-          y: boatY,
++          x: fishX,
++          y: fishY,
+         }}

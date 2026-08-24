@@ -1,0 +1,6 @@
+{
+  "name": "Dalisara",
+  "description": "An upper-luxury coastal resort in San Vicente, Palawan.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

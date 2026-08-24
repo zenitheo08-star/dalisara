@@ -1,0 +1,287 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Newsreader", ui-serif, Georgia, serif;
+  
+  --color-sand-50: var(--app-sand-50);
+  --color-sand-100: var(--app-sand-100);
+  --color-sand-200: var(--app-sand-200);
+  --color-sand-300: var(--app-sand-300);
+  --color-sand-800: var(--app-sand-800);
+  --color-sand-900: var(--app-sand-900);
+  
+  --color-ink-900: var(--app-ink-900);
+  --color-ink-800: var(--app-ink-800);
+  --color-ink-700: var(--app-ink-700);
+  --color-ink-400: var(--app-ink-400);
+  --color-ink-200: var(--app-ink-200);
+}
+
+@layer base {
+  :root {
+    /* ========================================================
+       LIGHT MODE: The "Print Editorial" Paradigm
+       Flat, matte surfaces, heavy grayscale photography, 
+       stark ink-on-paper contrast, architectural wireframes.
+       ======================================================== */
+    --app-sand-50: #FCFBF9;
+    --app-sand-100: #F5F2ED;
+    --app-sand-200: #E6E1D8;
+    --app-sand-300: #DCD8D0;
+    --app-sand-800: #4A4843;
+    --app-sand-900: #1C1C1A;
+    
+    --app-ink-900: #1A1A1A;
+    --app-ink-800: #333333;
+    --app-ink-700: #4D4D4D;
+    --app-ink-400: #858580;
+    --app-ink-200: #D6D6D1;
+  }
+
+  .dark {
+    /* ========================================================
+       DARK MODE: The "Coastal Night" Paradigm
+       We abandon the flat print look entirely. This is a 
+       volumetric, luminous, cinematic experience mimicking 
+       moonlight on water, glass, and warm lantern highlights.
+       ======================================================== */
+    --app-sand-50: #FCFAF5; /* Pure ivory sand */
+    --app-sand-100: #070908; /* The Deepest Ocean Void */
+    --app-sand-200: rgba(255, 255, 255, 0.05); /* Subtle frosted highlights */
+    --app-sand-300: rgba(255, 255, 255, 0.1);
+    --app-sand-800: #EAE5DA; 
+    --app-sand-900: #F8F5EE;
+    
+    --app-ink-900: #FCFAF5; /* Pure, pearlescent moonlight text */
+    --app-ink-800: #EDE8DE; /* High contrast body text */
+    --app-ink-700: #CFC9BE; /* Refined secondary text */
+    --app-ink-400: #A8A398; /* Crisp metadata and captions */
+    --app-ink-200: rgba(255, 255, 255, 0.18); /* Gossamer luminous edges */
+  }
+
+  /* Smooth, high-performance theme transition */
+  body, header, footer, main, nav, .theme-transition {
+    transition-property: background-color, border-color, color;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    transition-duration: 300ms;
+  }
+
+
+
+  body {
+    @apply font-sans antialiased selection:bg-ink-900 selection:text-sand-50;
+    background-color: var(--app-sand-100);
+    color: var(--app-ink-900);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif font-normal tracking-tight;
+  }
+
+  /* ------------------------------------------------------------------
+     DARK MODE SPECIFIC STYLES
+     ------------------------------------------------------------------ */
+  
+  /* 1. Volumetric Background */
+  .dark body {
+    background: radial-gradient(circle at 50% 0%, #151815 0%, #070908 85%);
+    background-attachment: fixed;
+  }
+
+  /* 2. Glassmorphism: Cards, dropdowns and popups become frosted, smoked glass */
+  .dark .bg-sand-50, 
+  .dark .bg-sand-50\/90, 
+  .dark .bg-sand-50\/95, 
+  .dark .bg-sand-50\/80 {
+    background-color: rgba(20, 23, 21, 0.85) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+    border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  }
+
+  /* 3. Ethereal Borders */
+  .dark .border-ink-900\/10,
+  .dark .border-ink-900\/20,
+  .dark .border-t, .dark .border-b, .dark .border-l, .dark .border-r {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+
+  /* 4. Imagery rendering */
+  .dark img {
+    filter: brightness(0.92) contrast(1.06) saturate(1.05);
+  }
+
+  .dark .group:hover img,
+  .dark .group-hover\:scale-105:hover img,
+  .dark a:hover img,
+  .dark button:hover img {
+    filter: brightness(1.04) contrast(1.1) saturate(1.15);
+  }
+
+  /* 5. Pearlescent Typography */
+  .dark h1, .dark h2, .dark h3 {
+    letter-spacing: -0.01em;
+  }
+
+  /* 6. CTA Buttons & Links: High contrast in Light Mode and Champagne Metallic in Dark Mode */
+  button.bg-ink-900,
+  a.bg-ink-900,
+  div > a.bg-ink-900 {
+    background-color: #1A1A1A !important;
+    color: #FCFBF9 !important;
+    border: 1px solid transparent !important;
+  }
+
+  button.bg-ink-900:hover,
+  a.bg-ink-900:hover,
+  div > a.bg-ink-900:hover {
+    background-color: #333333 !important;
+    color: #FFFFFF !important;
+  }
+  
+  button.bg-ink-900 *,
+  a.bg-ink-900 *,
+  div > a.bg-ink-900 * {
+    color: #FCFBF9 !important;
+  }
+
+  .dark button.bg-ink-900,
+  .dark a.bg-ink-900,
+  .dark div > a.bg-ink-900 {
+    background: linear-gradient(135deg, #FBF8F0 0%, #D8D3C5 100%) !important;
+    color: #080A08 !important;
+    border: 1px solid rgba(255, 255, 255, 0.7) !important;
+    box-shadow: 0 8px 24px -4px rgba(240, 235, 222, 0.28) !important;
+    font-weight: 600 !important;
+  }
+
+  .dark button.bg-ink-900:hover,
+  .dark a.bg-ink-900:hover,
+  .dark div > a.bg-ink-900:hover {
+    background: linear-gradient(135deg, #FFFFFF 0%, #E8E3D5 100%) !important;
+    box-shadow: 0 12px 28px -4px rgba(240, 235, 222, 0.45) !important;
+    color: #080A08 !important;
+  }
+  
+  /* Fix text inside Champagne buttons and links in Dark Mode to ensure it stays dark and legible */
+  .dark button.bg-ink-900 *,
+  .dark a.bg-ink-900 *,
+  .dark div > a.bg-ink-900 *,
+  .dark button.text-sand-50.bg-ink-900,
+  .dark a.text-sand-50.bg-ink-900 {
+    color: #080A08 !important;
+    font-weight: 600 !important;
+  }
+
+  /* 7. Non-button Dark Blocks: Invert the 'bg-ink-900' inverted blocks to become glassmorphic in dark mode */
+  .dark div.bg-ink-900,
+  .dark section.bg-ink-900 {
+    background: rgba(255, 255, 255, 0.04) !important;
+    backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+  
+  /* 8. Force Typography Overrides: Ensure Tailwind utilities correctly map to the glowing night colors */
+  .dark body,
+  .dark .text-ink-900 { color: #FCFAF5 !important; }
+  .dark .text-ink-800 { color: #EDE8DE !important; }
+  .dark .text-ink-700 { color: #CFC9BE !important; }
+  .dark .text-ink-400 { color: #A8A398 !important; }
+  .dark .text-ink-200 { color: rgba(255, 255, 255, 0.18) !important; }
+  
+  /* Enhanced legibility for secondary elements with opacity modifiers */
+  .dark .opacity-40 { opacity: 0.7 !important; }
+  .dark .opacity-50 { opacity: 0.8 !important; }
+  .dark .opacity-60 { opacity: 0.88 !important; }
+  .dark .opacity-80 { opacity: 0.95 !important; }
+  
+  /* Hover states for interactive menu items and links */
+  .dark .hover\:bg-ink-900\/5:hover {
+    background-color: rgba(255, 255, 255, 0.06) !important;
+  }
+
+  /* Form Controls & Inputs */
+  .dark input[type=text],
+  .dark input[type=email],
+  .dark input[type=tel],
+  .dark textarea {
+    color: #FCFAF5 !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+  }
+
+  .dark input::placeholder,
+  .dark textarea::placeholder {
+    color: rgba(240, 236, 225, 0.45) !important;
+  }
+
+  .dark input:focus,
+  .dark textarea:focus {
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    box-shadow: 0 0 16px rgba(240, 236, 225, 0.12);
+  }
+
+  /* Ensure sand text in dark layouts remains bright (excluding CTA buttons) */
+  .dark div.text-sand-50:not(.bg-ink-900),
+  .dark p.text-sand-50:not(.bg-ink-900),
+  .dark span.text-sand-50:not(.bg-ink-900),
+  .dark h1.text-sand-50,
+  .dark h2.text-sand-50,
+  .dark h3.text-sand-50,
+  .dark h4.text-sand-50,
+  .dark a.text-sand-50:not(.bg-ink-900) {
+    color: #FCFAF5 !important;
+  }
+
+  .dark input[type=range] {
+    background: rgba(255, 255, 255, 0.12) !important;
+    accent-color: #FBF8F0 !important;
+  }
+}
+
+/* ========================================================
+   SEAMLESS HERO TYPOGRAPHY OVER VIDEO
+   Optically crisp contrast with zero blurry clouds
+   ======================================================== */
+.hero-glow-heading {
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.hero-glow-subtle {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.dark .hero-glow-heading {
+  text-shadow: 0 3px 20px rgba(0, 0, 0, 0.65), 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.dark .hero-glow-subtle {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+/* ========================================================
+   PRINT STYLESHEET: Editorial Archival Reservation Folio
+   ======================================================== */
+@media print {
+  header, footer, nav, button, .no-print, [aria-label="Guest Concierge Desk"] {
+    display: none !important;
+  }
+
+  body {
+    background: #FFFFFF !important;
+    color: #111111 !important;
+    font-size: 11pt !important;
+  }
+
+  .bg-sand-50, .bg-sand-100, .bg-sand-200 {
+    background: transparent !important;
+    box-shadow: none !important;
+    border-color: #DDDDDD !important;
+  }
+}
+
