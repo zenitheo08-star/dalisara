@@ -271,22 +271,36 @@ export const RippleDistortion: React.FC<RippleDistortionProps> = ({
 
     if (isVideo) {
       video = document.createElement('video');
-      video.crossOrigin = 'anonymous';
+      if (src.startsWith('http')) {
+        video.crossOrigin = 'anonymous';
+      }
       video.muted = true;
       video.loop = true;
       video.playsInline = true;
       video.autoplay = true;
       video.preload = 'auto';
-      video.oncanplay = () => {
+      
+      const handleVideoLoad = () => {
         if (disposed || !video) return;
-        imageTexture.image = video;
-        compositeUniforms.uTextureSize.value = [video.videoWidth || 1, video.videoHeight || 1];
-        video.play().catch(() => {});
+        // Only set it once we actually have video dimensions to avoid WebGL errors
+        if (video.videoWidth > 0) {
+          imageTexture.image = video;
+          compositeUniforms.uTextureSize.value = [video.videoWidth, video.videoHeight];
+          video.play().catch(() => {});
+        }
       };
+
+      video.addEventListener('loadeddata', handleVideoLoad);
+      video.addEventListener('canplay', handleVideoLoad);
+      video.addEventListener('canplaythrough', handleVideoLoad);
+
       video.src = src;
+      video.load();
     } else {
       const image = new window.Image();
-      image.crossOrigin = 'anonymous';
+      if (src.startsWith('http')) {
+        image.crossOrigin = 'anonymous';
+      }
       image.decoding = 'async';
       image.onload = () => {
         if (disposed) return;

@@ -59,8 +59,7 @@ export const Home = memo(function Home() {
     const handleResize = () => {
       // Use landscape video on tablet/desktop (>= 768px)
       if (window.innerWidth >= 768) {
-        // Add a timestamp query param to bypass aggressive browser caching from the previous file
-        setVideoSrc('/landscape-video.mp4?v=2');
+        setVideoSrc('/landscape-video.mp4');
       } else {
         setVideoSrc('/wave-pattern.mp4');
       }
