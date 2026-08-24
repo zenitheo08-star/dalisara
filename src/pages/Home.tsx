@@ -53,15 +53,15 @@ const landscapeItems: AccordionGalleryItem[] = [
 
 export const Home = memo(function Home() {
   const [isPressing, setIsPressing] = useState(false);
-  const [videoSrc, setVideoSrc] = useState('/wave-pattern.mp4');
+  const [videoSrc, setVideoSrc] = useState('/wave-pattern.mp4?v=3');
 
   useEffect(() => {
     const handleResize = () => {
       // Use landscape video on tablet/desktop (>= 768px)
       if (window.innerWidth >= 768) {
-        setVideoSrc('/landscape-video.mp4');
+        setVideoSrc('/landscape-video.mp4?v=3');
       } else {
-        setVideoSrc('/wave-pattern.mp4');
+        setVideoSrc('/wave-pattern.mp4?v=3');
       }
     };
     handleResize(); // Initial check

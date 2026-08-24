@@ -282,7 +282,14 @@ export const RippleDistortion: React.FC<RippleDistortionProps> = ({
       video.playsInline = true;
       video.autoplay = true;
       video.preload = 'auto';
-      
+      video.crossOrigin = 'anonymous';
+      video.style.position = 'absolute';
+      video.style.width = '0px';
+      video.style.height = '0px';
+      video.style.opacity = '0';
+      video.style.pointerEvents = 'none';
+      document.body.appendChild(video);
+
       const handleVideoReady = () => {
         if (disposed || !video) return;
         if (video.videoWidth > 0) {
@@ -627,7 +634,11 @@ export const RippleDistortion: React.FC<RippleDistortionProps> = ({
       disposed = true;
       if (video) {
         video.pause();
-        video.src = '';
+        video.removeAttribute('src');
+        video.load();
+        if (video.parentNode) {
+          video.parentNode.removeChild(video);
+        }
       }
       cancelAnimationFrame(raf);
       ro.disconnect();
